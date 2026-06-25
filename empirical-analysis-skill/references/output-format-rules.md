@@ -2,12 +2,24 @@
 
 ## Required Stage 1 Outputs
 
+Stage 1 consists of two forced parts:
+
+### 1A. Variable Names
+
 When variables need checking or renaming:
 
 1. Raw variable list
 2. `变量名称修改建议表`
 3. User confirmation request
 4. `最终变量名对照表` after confirmation and renaming
+
+### 1B. Empirical Design
+
+When the empirical design needs confirmation:
+
+1. `实证分析方案确认表`
+2. User confirmation request
+3. Explicit approval before moving to Stage 2
 
 ## Table Format
 

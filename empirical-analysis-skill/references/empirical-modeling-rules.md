@@ -2,7 +2,7 @@
 
 ## Workflow Order
 
-After Stage 3, use this order when the blueprint has been confirmed:
+After Stage 1B and Stage 2 are complete, use this order when the blueprint has been confirmed:
 
 1. baseline regression
 2. parallel-trend test if applicable
@@ -15,7 +15,7 @@ After Stage 3, use this order when the blueprint has been confirmed:
 
 ## Hard Rules
 
-- Do not write full Stata `.do` code before blueprint confirmation.
+- Do not write full Stata `.do` code before Stage 1B and blueprint confirmation.
 - The model choice must be concrete: FE, DID, multi-period DID, inverted-U, mediation, IV, PSM, Heckman, or heterogeneity.
 - If a module is in the blueprint, the code must implement it exactly.
 - Do not silently skip promised modules.

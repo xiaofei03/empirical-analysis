@@ -1,0 +1,7 @@
+interface:
+  display_name: "Empirical Analysis"
+  short_description: "Variable checks, data prep, and empirical modeling"
+  default_prompt: "Use $empirical-analysis to verify variable names, clean an uploaded dataset, design the regression, and draft Stata code."
+
+policy:
+  allow_implicit_invocation: true

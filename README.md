@@ -1,6 +1,6 @@
-# empirical-analysis-skill
+# empirical-analysis
 
-Codex skill for rigorous empirical analysis workflows in Stata, including research blueprint alignment, code generation, and automated execution with self-correction.
+Codex skill for empirical research workflows on uploaded datasets, including variable-name verification, data cleaning, regression design, Stata code generation, and robustness, mechanism, and heterogeneity analysis.
 
 ## Contents
 
@@ -19,7 +19,7 @@ Copy the `empirical-analysis-skill` folder into your local Codex skills director
 The skill name is:
 
 ```text
-empirical-analysis-skill
+empirical-analysis
 ```
 
 ## Source

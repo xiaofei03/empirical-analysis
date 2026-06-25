@@ -4,7 +4,9 @@
 
 - Default to English.
 - Keep names short, standard, consistent, and readable.
-- Prefer lowercase.
+- Actual variable names may use normalized academic casing when that better matches paper conventions.
+- Preserve common acronym forms such as `AI`, `ROA`, `ROE`, `CEO`, `SOE`, and `RD`.
+- Allow PascalCase or acronym-plus-PascalCase forms such as `AIwashing`, `AIPatent`, `AIwashingSq`, `FirmSize`, `TradeCredit`, `AgencyCost`, and `TobinQ`.
 - Do not use Chinese names in actual dataset variable names.
 - Do not use underscores in actual dataset variable names.
 - Do not use digits in actual dataset variable names.
@@ -14,9 +16,18 @@
 - Do not use overly long names.
 - Do not use vague names such as `x`, `a`, `b`, `data`, or `var`.
 - Prefer common empirical abbreviations when they are clear.
-- If raw names are uppercase, title case, or camelCase, normalize them to concise lowercase English.
+- Do not misclassify normalized acronym capitalization as inconsistent case.
+- Treat `AI`, `ROA`, `ROE`, `CEO`, `SOE`, `RD`, and `TobinQ` as valid normalized academic names.
+- Reserve `大小写不统一` for genuinely mixed or messy naming such as `FirmSIZE`, `aiWashing`, `AIWashing`, or `NetPROFITGrowth`.
+- If raw names are uppercase, title case, or camelCase, normalize them to a clean academic style rather than forcing lowercase.
 - If multiple raw names would collide after normalization, resolve the conflict by meaning, not by adding digits or underscores.
 - If meaning cannot be determined, mark it `需用户确认含义`.
+
+## Character Rule
+
+- Actual variable names may contain only English letters.
+- Actual variable names must not contain digits, underscores, spaces, Chinese characters, or special symbols.
+- Validity should be checked with a letter-only pattern such as `^[A-Za-z]+$`.
 
 ## Digit Exception Boundary
 
@@ -24,7 +35,7 @@
 - The digit ban does not apply to formulas, mathematical notation, model descriptions, or paper presentation text.
 - In formulas, model setup, paper explanations, table labels, or mathematical expression, superscript digits such as `age²`, `size²`, or `X²` are allowed.
 - In Stata modeling, prefer explicit expressions such as `c.age#c.age` for squares instead of forcing a generated variable like `age2`.
-- If a squared variable must be generated, use an `sq` suffix such as `agesq`, `sizesq`, `levsq`, or `roasq`.
+- If a squared variable must be generated, use an `Sq` or `sq` suffix such as `AIwashingSq`, `FirmSizeSq`, `levsq`, or `roasq`.
 - Do not use numeric suffixes for generated square terms.
 - When checking variable names, do not misread superscript digits in formulas or mathematical expressions as dataset variable-name violations.
 

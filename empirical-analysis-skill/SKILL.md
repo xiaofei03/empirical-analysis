@@ -32,7 +32,7 @@ Stage 1 is a hard gate. If the user uploads data, all analysis must start there.
 
 `变量名称已通过规范化核验：未发现下划线、数字、中文变量名、特殊符号或明显不统一命名。可以进入第二阶段的数据结构与清洗处理。`
 
-Note: digit checks apply to actual dataset variable names and newly generated variable names, not to superscript digits used in formulas, model notation, or paper presentation.
+Note: digit checks apply to actual dataset variable names and newly generated variable names, not to superscript digits used in formulas, model notation, or paper presentation. Normalized academic casing such as `AI`, `ROA`, `AIwashing`, or `TobinQ` is allowed for actual variable names.
 
 ## Reference Loading
 

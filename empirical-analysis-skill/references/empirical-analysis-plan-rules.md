@@ -1,5 +1,11 @@
 # Empirical Analysis Plan Rules
 
+## Mode Boundary
+
+This file mainly governs `Full Analysis Mode`.
+
+In `Result Refactor Mode`, the assistant may still need a compact empirical-design summary, but the hard extra requirement is baseline confirmation rather than full redesign confirmation.
+
 ## Stage 1B Requirement
 
 After variable names are confirmed in Stage 1A, the assistant must confirm the empirical analysis plan before any cleaning, statistics, regression, or visualization begins.
@@ -22,6 +28,8 @@ After variable names are confirmed in Stage 1A, the assistant must confirm the e
 - If the user has already provided enough information, organize it into a `实证分析方案确认表` and ask for confirmation.
 - If information is incomplete, ask focused questions first.
 - Do not move to data cleaning or later stages until the user explicitly confirms the plan.
+- In `Result Refactor Mode`, do not silently reinterpret an existing model if the user has requested result preservation.
+- If the refactor task implies preserving prior numerical results, prioritize baseline confirmation before revising model wording.
 
 ## Suggested Confirmation Table
 

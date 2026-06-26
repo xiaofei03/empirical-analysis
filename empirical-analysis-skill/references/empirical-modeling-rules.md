@@ -13,6 +13,16 @@ After Stage 1B and Stage 2 are complete, use this order when the blueprint has b
 7. heterogeneity analysis
 8. further analysis if applicable
 
+In `Result Refactor Mode`, use this order after baseline confirmation:
+
+1. audit existing do-files, result files, and manuscript tables
+2. identify legacy drift if any
+3. regenerate standardized do-files without silently changing confirmed logic
+4. regenerate standardized result tables
+5. regenerate standardized figures
+6. perform consistency audit
+7. only then declare outputs writing-ready
+
 ## Hard Rules
 
 - Do not write full Stata `.do` code before Stage 1B and blueprint confirmation.
@@ -22,6 +32,9 @@ After Stage 1B and Stage 2 are complete, use this order when the blueprint has b
 - Do not downgrade a concrete agreed method into a placeholder.
 - Use explicit variable lists rather than global shortcuts.
 - Write Chinese logic comments before every key empirical block.
+- In `Result Refactor Mode`, do not silently change the empirical logic when the user asks to preserve existing results.
+- If old results and current code do not match, stop and trigger legacy drift confirmation instead of guessing.
+- Do not declare regenerated outputs formal until consistency audit has been completed.
 
 ## Coding Preferences
 
@@ -30,6 +43,8 @@ After Stage 1B and Stage 2 are complete, use this order when the blueprint has b
 - Use explicit squared terms.
 - Use explicit interaction terms or clear factor syntax.
 - Keep baseline, robustness, endogeneity, mechanism, and heterogeneity blocks separate.
+- Keep export blocks separate from estimation blocks.
+- When figures are needed, prefer a two-step route: Stata for values, Python for final English-only figure output.
 
 ## Blueprint Output
 

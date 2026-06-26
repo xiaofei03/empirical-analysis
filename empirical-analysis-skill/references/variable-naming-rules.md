@@ -47,6 +47,35 @@ If any variable name is noncompliant, the assistant must:
 2. Ask the user to confirm the changes.
 3. Wait for explicit confirmation before renaming.
 4. Print a `最终变量名对照表` after renaming.
+5. Print a `结果展示名对照表` after renaming.
+
+## Dual-Layer Naming Rule
+
+This skill must distinguish:
+
+- raw variable name
+- analysis variable name
+- display variable name
+
+Rules:
+
+- the analysis variable name is used in dataset fields, do-files, regression code, and structured exports
+- the display variable name is used in tables, figures, and manuscript writing
+- the display variable name may contain spaces and standard academic wording
+- the display variable name must not expose raw code style such as underscores, trailing digits, or ad hoc abbreviations unless the abbreviation is academically standard
+
+Examples:
+
+- `ROA1` -> analysis name `ROA` -> display name `ROA`
+- `AIwashing_sq` -> analysis name `AIwashingSq` -> display name `AI Washing Squared`
+- `Balance1` -> analysis name `OwnershipBalance` -> display name `Ownership Balance`
+
+## Required Display-Name Output
+
+The assistant must output a `结果展示名对照表` in this format:
+
+| 分析变量名 | 展示变量名 | 适用对象 | 修改理由 |
+| --- | --- | --- | --- |
 
 ## Table Format
 

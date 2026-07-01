@@ -1,6 +1,6 @@
 ---
 name: empirical-analysis
-description: Dual-mode empirical research workflow for either full end-to-end analysis from uploaded data or refactoring and standardizing existing empirical results, including variable-name confirmation, empirical-design confirmation, standardized Stata do-file generation, consistency-checked result export, English-only figure finalization, and Markdown-first output packaging for downstream paper writing.
+description: Dual-mode empirical research workflow for either full end-to-end analysis from uploaded data or refactoring and standardizing existing empirical results, including variable-name confirmation, empirical-design confirmation, standardized Stata do-file generation, consistency-checked result export, bilingual Python figure finalization, and Markdown-first output packaging for downstream paper writing.
 ---
 
 # Empirical Analysis Skill
@@ -195,9 +195,12 @@ Markdown is the only formal table source for downstream manuscript writing.
 
 Final empirical figures must satisfy all of the following:
 
-- all visible text must be English only
-- the font must be Times New Roman
-- no Chinese title, axis label, legend, annotation, or caption is allowed inside the final figure
+- paired bilingual figures are a first-round deliverable, not an after-the-fact translation task
+- formal writing-ready figure delivery must generate two language variants when the project maintains both Chinese and English manuscripts
+- Chinese manuscript figures must use Chinese labels and a Chinese academic font, preferably Songti/SimSun/STSong
+- English manuscript figures must use English labels and Times New Roman
+- the Chinese and English versions must be generated from the same plotting data, prediction grid, coefficients, margins, or exported values
+- the plotted curve, scatter points, confidence intervals, axis ranges, tick positions, and legend order must remain identical across language variants unless a journal-specific format exception is recorded
 - no raw variable names with underscores or numeric suffixes are allowed in the final figure
 - final figures must be traceable to the corresponding result table or exported plotting data
 
@@ -205,8 +208,42 @@ Preferred route:
 
 - Stata computes and exports values
 - Python handles final plotting and layout
+- when Stata code has no graph command for a required figure, use the confirmed model specification and exported data to reproduce the calculation in Python, but record the calculation source and consistency checks
 
 Do not treat a raw Stata graph as a final deliverable by default.
+
+### Figure Environment Bootstrap
+
+For any project that needs publication-quality figures, create or reuse a project-local isolated plotting environment instead of relying on system Python.
+
+Default environment rule:
+
+- create `.venv_figures/` or another project-local ignored environment
+- install or verify only plotting/runtime dependencies required for final figures, such as `matplotlib`, `pandas`, `numpy`, and `Pillow`
+- keep the environment out of Git through `.gitignore`
+- record the Python executable, package versions, and resolved Chinese/English fonts in the figure manifest
+- fail loudly if required fonts are unavailable rather than silently falling back
+
+Use `scripts/bootstrap_figure_env.py` as the default companion helper for this setup.
+
+Formal bilingual figure package:
+
+- `figures/data/<figure_id>_plotdata.csv`
+- `figures/cn/<figure_id>_cn.png`
+- `figures/en/<figure_id>_en.png`
+- `figures/config/<figure_id>_labels.json` when labels are not hard-coded in a project wrapper
+- `figures/manifest/figure_manifest.md`
+- optional visual QA sheet containing the rendered figure set for human inspection
+
+Naming is part of correctness. Avoid ambiguous names such as `new.png`, `result.png`, `图1.png`, or a Chinese source filename reused for English output.
+
+Failure conditions:
+
+- English figures contain Chinese visible labels, legends, annotations, titles, or axis text
+- Chinese and English figures are generated from different plotting data or inconsistent prediction grids
+- English figures are produced by cropping or copying Chinese figures
+- final figures contain raw analysis variable names, underscores, numeric suffixes, or unapproved abbreviations
+- fonts silently fall back to a default family
 
 For detailed final-figure requirements, read [Figure Final Rules](references/figure-final-rules.md) whenever figures are part of the requested deliverable.
 
@@ -219,7 +256,8 @@ Every formal empirical delivery must include, when applicable:
 - standardized `rtf` tables
 - standardized `markdown` tables
 - figure source files or exported plotting data
-- final English-only figure files
+- final Chinese and English figure files when bilingual manuscripts are maintained
+- project-local figure environment setup or a recorded reason why no Python figure environment was needed
 - `result_manifest`
 - `consistency_check`
 
@@ -244,6 +282,8 @@ At minimum, check:
 - dependent-variable labels
 - control-variable labels
 - figure labels
+- bilingual figure consistency, including same plotting data, same axis ranges, same tick positions, and same plotted values across Chinese and English variants
+- absence of Chinese visible text inside English figures and absence of unintended English-only labels inside Chinese figures
 - whether display names match the display-name map
 
 If mismatches exist, output `结果差异核查表` and do not silently proceed.
@@ -271,6 +311,7 @@ Load these files as needed, one level deep from this file:
 - When a blueprint is confirmed, the generated code must implement every promised module.
 - Use explicit variable lists rather than global shortcuts.
 - Write Chinese logic comments before every key empirical block in Stata code.
-- Formal figures must be English-only and Times New Roman.
+- Formal figures for bilingual projects must be generated as paired Chinese and English outputs from the same plotting data; Chinese figures use Songti/SimSun/STSong-style fonts and Chinese labels, while English figures use Times New Roman and English labels.
+- Use a project-local isolated plotting environment for final figure generation when Python plotting is required; do not depend on whichever Python happens to be active in the shell.
 - Formal tables must include markdown exports.
 - Markdown is the only formal table source for downstream paper writing.

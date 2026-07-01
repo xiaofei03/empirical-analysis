@@ -1,8 +1,8 @@
 # empirical-analysis
 
-`empirical-analysis` is a Codex skill for empirical research workflows that start from uploaded datasets and move through variable-name verification, data preparation, regression design, Stata code generation, and empirical analysis.
+`empirical-analysis` is a Codex skill for empirical research workflows that either start from uploaded datasets or refactor existing empirical code/results into a writing-ready output package.
 
-It is designed for users who need a strict first-stage variable-name hard gate before any cleaning, modeling, robustness testing, mechanism analysis, or heterogeneity analysis begins.
+It is designed for users who need strict variable-name and model-design gates, standardized Stata and result exports, Markdown-first tables, and bilingual publication-quality figures generated from shared plotting data.
 
 ## What It Covers
 
@@ -13,12 +13,17 @@ It is designed for users who need a strict first-stage variable-name hard gate b
 - Regression design and Stata code generation
 - Robustness, mechanism, and heterogeneity analysis
 - Output formatting for research workflows
+- Result-refactor workflows that preserve legacy results while improving names, tables, and figures
+- RTF and Markdown result-table export
+- Project-local Python plotting environment setup
+- Paired Chinese and English figure finalization from the same plotting data
 
 ## Repository Layout
 
 - `empirical-analysis-skill/SKILL.md`: main controller for the skill
 - `empirical-analysis-skill/agents/openai.yaml`: UI metadata for Codex
 - `empirical-analysis-skill/references/`: modular workflow and naming rules
+- `empirical-analysis-skill/scripts/`: reusable figure finalization and environment bootstrap helpers
 - `skill.zip`: packaged release artifact
 
 ## Install
@@ -37,11 +42,13 @@ empirical-analysis
 
 ## Workflow Summary
 
-1. Verify dataset variable names.
-2. Present a rename suggestion table if needed.
-3. Wait for user confirmation before renaming.
-4. Proceed to cleaning, statistics, modeling, and analysis only after the Stage 1 gate is cleared.
-5. Generate Stata code and empirical outputs according to the confirmed blueprint.
+1. Select either Full Analysis Mode or Result Refactor Mode.
+2. Verify variable names and display names before analysis or regeneration.
+3. Confirm the empirical model plan or legacy-result baseline.
+4. Generate or refactor Stata code without changing unapproved logic.
+5. Export formal RTF and Markdown tables, with Markdown as the writing source of truth.
+6. Generate paired Chinese and English figures from shared plotting data in a project-local figure environment.
+7. Produce a manifest and consistency audit for downstream manuscript writing.
 
 ## Release Notes
 

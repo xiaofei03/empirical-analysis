@@ -4,76 +4,201 @@
 
 This file governs the final stage of empirical figure production.
 
-The goal is not merely to produce a readable figure. The goal is to produce a writing-ready figure whose language, font, variable labels, and visual cleanliness are suitable for direct downstream manuscript use.
+The goal is not merely to produce a readable figure. The goal is to produce writing-ready figures whose data source, language, font, variable labels, and visual layout are suitable for direct downstream manuscript use.
 
-## Final Figure Standard
+For bilingual paper projects, figure finalization must produce paired Chinese and English figures from the same plotting data so the two manuscripts differ only in language and typography, not in empirical content.
 
-Every final empirical figure must satisfy all of the following:
+## Core Principle
 
-- all visible text is English only
-- all visible text uses Times New Roman
-- no Chinese title, subtitle, axis label, legend, annotation, note, or caption appears inside the figure
-- no raw variable name with underscores appears inside the figure
-- no numeric-suffix raw variable name such as `ROA1`, `Balance1`, or `AIwashing_sq` appears inside the figure
-- the displayed labels must follow the confirmed `结果展示名对照表`
-- axis tick labels must not overlap
-- legends must not overlap the plotted content
-- the final figure must match the corresponding regression or exported plotting data
+Final empirical figures should normally follow this route:
 
-## Preferred Workflow
+1. Stata estimates the model.
+2. Stata exports margins, predictions, coefficients, residualized values, matched-sample diagnostics, or other plotting data.
+3. Python generates the final publication-style figure.
+4. The same plotting data are rendered twice when bilingual delivery is needed:
+   - Chinese version for Chinese manuscript.
+   - English version for English manuscript.
 
-Preferred route:
+Do not treat a raw Stata graph as the default final deliverable. Stata graphs may be used as a visual benchmark, but Python should own final typography and layout unless the user explicitly requests otherwise.
 
-1. Stata estimates the model
-2. Stata exports margins, predictions, coefficients, or plotting data
-3. Python generates the final figure
+For bilingual projects, paired figure generation is a first-pass requirement. Do not create a Chinese figure first and later crop, copy, screenshot, OCR, or relabel it into English. That workflow is a failure condition because text embedded in the source-language image can survive into the other language and because the figure source becomes impossible to audit.
 
-Do not treat a raw Stata graph as the default final deliverable.
+## Figure Environment Rule
 
-## Language Rule
+Use a project-local isolated plotting environment for formal figure generation whenever Python plotting is needed.
 
-Use English-only wording for:
+Default:
 
-- title
-- axis titles
-- legend labels
-- annotation labels
-- note text inside figures
+- create `.venv_figures/` under the paper project or another explicitly named local plotting environment
+- exclude that environment from Git
+- install or verify `matplotlib`, `pandas`, `numpy`, and `Pillow`
+- resolve required fonts before drawing
+- record the environment and font resolution in the figure manifest
 
-Examples:
+Use `scripts/bootstrap_figure_env.py` to create or verify this environment.
 
-- use `AI Washing` rather than `AIwashing`
-- use `AI Washing Squared` rather than `AIwashing_sq`
-- use `Resilience` rather than `CR`
-- use `Trade Credit` rather than `TCF`
-- use `Agency Cost` rather than `AC1`
+If a required Chinese or English font is unavailable, stop and report the missing font. Do not silently render with a default fallback.
+
+## Bilingual Figure Standard
+
+When the project maintains both Chinese and English manuscripts, every formal figure should have two synchronized outputs:
+
+- Chinese figure:
+  - all visible labels use Chinese unless the concept is conventionally written in English, such as AI washing
+  - font should be Songti/SimSun/STSong or another confirmed Chinese academic font
+  - minus signs must render correctly
+  - no mojibake, tofu boxes, or question marks are allowed
+- English figure:
+  - all visible labels use English
+  - font must be Times New Roman
+  - no Chinese title, axis label, legend, annotation, note, or caption appears inside the figure
+
+The two variants must share:
+
+- same source data
+- same prediction grid or margins grid
+- same coefficient, prediction, or residual values
+- same axis ranges
+- same tick positions unless label length makes a recorded layout adjustment necessary
+- same color palette
+- same line style, marker style, and legend order
+- same confidence interval geometry where confidence intervals are shown
+
+Only labels, font family, and language-specific spacing should differ.
+
+## Data-First Rule
+
+Every final figure must be traceable to one of these sources:
+
+- exported Stata margins or predictions
+- exported regression coefficients or confidence intervals
+- exported matching diagnostics
+- exported plotting dataset generated by the confirmed do-file
+- user-confirmed legacy plotting data
+- Python reproduction of the confirmed model when Stata did not originally produce a graph
+
+If Python recomputes fitted curves from the dataset, the script must record:
+
+- dataset path
+- model formula
+- sample filter
+- controls used
+- fixed effects or clustering treatment when relevant
+- whether the curve is descriptive, OLS-based, margins-based, or copied from an exported table
+
+If the Python-computed figure is meant to replicate a Stata figure, compare it against Stata-exported plotting values where available. If no Stata plotting values exist, compare the model specification and key coefficients against the confirmed result table.
+
+## Robustness-Figure Rule
+
+Some robustness figures are not produced directly by Stata code. In that case, Python may generate the figure if all of the following hold:
+
+- the robustness models are explicitly listed
+- each model's dependent variable, independent variable, controls, and sample restriction are recorded
+- the plotted curve is computed from the same data and model logic as the robustness table
+- the figure manifest states that the graph was Python-generated from the confirmed robustness specifications
+- the result consistency audit checks coefficients, signs, and sample restrictions against the robustness table
+
+For overlaid inverted-U robustness curves, use a single shared plotting protocol:
+
+- one row per model in the manifest
+- one prediction grid per model unless the user confirms a common grid
+- controls fixed at model-specific sample means unless the confirmed Stata margins output says otherwise
+- optional normalization to a common starting point only if clearly documented in the figure note or manifest
+- same plot geometry across Chinese and English variants
+
+## Label Rule
+
+Labels must come from the confirmed display-name map.
+
+Avoid raw analysis variables in final figures:
+
+- avoid `AIwashing`
+- avoid `AIwashing_sq`
+- avoid `ROA1`
+- avoid `Balance1`
+- avoid variables with underscores
+
+Preferred English labels:
+
+- `AI Washing`
+- `AI Washing Squared`
+- `Corporate Resilience`
+- `Trade Credit Financing`
+- `Agency Cost`
+- `Analyst Attention`
+- `R&D Human Capital`
+- `Financing Constraint`
+- `Region`
+
+Preferred Chinese labels:
+
+- `人工智能洗白`
+- `人工智能洗白平方项`
+- `企业韧性`
+- `商业信用融资`
+- `代理成本`
+- `分析师关注度`
+- `研发人力资本`
+- `融资约束`
+- `地区`
 
 ## Font Rule
 
-- final exported figures must use Times New Roman
-- if Python is used, explicitly set the font family rather than relying on system defaults
-- if a font fallback occurs, the assistant must detect it and fix it before declaring the figure final
+Python plotting scripts must explicitly set fonts and must not rely on defaults.
+
+Recommended Python font strategy:
+
+- use `Times New Roman` for English figures
+- use `SimSun`, `Songti SC`, `STSong`, or another verified Songti-style font for Chinese figures
+- set `axes.unicode_minus = False` for Chinese figures to avoid missing minus signs
+- check `matplotlib.font_manager` resolution before exporting
+- if the requested font is unavailable, stop and report the missing font instead of silently falling back
+
+The final audit must check rendered output, not only rcParams, because matplotlib can silently fall back to another font.
+
+## Layout Rule
+
+Before final export, check:
+
+- axis tick labels do not overlap
+- legends do not overlap plotted content
+- labels are not clipped
+- title, notes, and annotations fit inside the canvas
+- figure works at manuscript insertion width
+- no excessive blank margins
+- export resolution is suitable for Word and journal submission
+
+Recommended export defaults:
+
+- PNG at 600 dpi for Word manuscripts
+- PDF or SVG optional for journal submission if fonts embed correctly
+- `bbox_inches="tight"` only after verifying it does not clip text
 
 ## Figure Naming Rule
 
-Use stable English file names for final figures.
+Use stable paired names.
 
-Recommended examples:
+Recommended pattern:
 
-- `baseline_curve_final.png`
-- `robustness_curve_final.png`
-- `moderation_main_final.png`
-- `moderation_trade_credit_final.png`
-- `heterogeneity_rd_final.png`
-- `heterogeneity_constraint_final.png`
-- `heterogeneity_region_final.png`
-- `psm_density_final.png`
-- `psm_balance_final.png`
+- Chinese: `figures/cn/<figure_id>_cn.png`
+- English: `figures/en/<figure_id>_en.png`
+- plotting data: `figures/data/<figure_id>_plotdata.csv`
+- label config: `figures/config/<figure_id>_labels.json`
+- manifest: `figures/manifest/<figure_id>_manifest.md`
+
+Examples:
+
+- `figures/cn/baseline_curve_cn.png`
+- `figures/en/baseline_curve_en.png`
+- `figures/cn/robustness_curve_cn.png`
+- `figures/en/robustness_curve_en.png`
+- `figures/cn/moderation_main_cn.png`
+- `figures/en/moderation_main_en.png`
 
 Avoid:
 
-- Chinese file names
-- temporary names such as `a1.png`, `result.png`, `new.png`
+- Chinese file names for final cross-platform figure files
+- temporary names such as `a1.png`, `result.png`, or `new.png`
 - mixed naming styles
 
 ## Required Figure Inputs
@@ -81,9 +206,11 @@ Avoid:
 Before drawing a final figure, confirm:
 
 - which regression result it corresponds to
+- which table or model specification it traces to
 - which sample it uses
 - which variable display names it should use
 - whether the plotted values come from the current run or a legacy baseline
+- whether the figure requires Chinese, English, or paired bilingual output
 
 If the figure source is ambiguous, stop and trigger legacy drift confirmation.
 
@@ -91,34 +218,50 @@ If the figure source is ambiguous, stop and trigger legacy drift confirmation.
 
 Before final export, the assistant must check:
 
-- English-only text
-- Times New Roman text
+- Chinese figure uses Chinese labels and Songti-style font
+- English figure uses English-only labels and Times New Roman
+- no raw code variable names remain
+- no numeric-suffix raw labels remain
 - no overlapping tick labels
 - no legend overlap
-- no Chinese inside figure
-- no raw code variable names
+- no clipped labels
 - consistent line styles and color labels
 - consistency with the corresponding table or exported plotting data
+- bilingual figure geometry matches when paired outputs are required
+- a visual QA sheet or equivalent image review was generated for all final figures when more than one figure is delivered
+- English outputs were drawn directly from plotting data and not derived from Chinese raster images
 
 ## Figure Consistency Audit Output
 
 If figure finalization is part of a formal delivery, record at least:
 
-- figure file name
+- figure file names
+- language variants generated
 - data source
 - model source
+- sample filter
+- plotting-data file
 - whether labels match the display-name map
-- whether font requirement passed
-- whether English-only requirement passed
+- whether Chinese font requirement passed
+- whether English font requirement passed
+- whether bilingual geometry matched
 - whether overlap check passed
+- whether consistency with the result table passed
+- whether the project-local plotting environment and font resolution were recorded
+- whether the English-only visible-text audit passed for English figures
 
 ## Failure Rule
 
 Do not declare a figure final if:
 
-- the figure still contains Chinese text
-- the font is not Times New Roman
-- the axis labels overlap
+- the Chinese figure has garbled Chinese text or missing glyph boxes
+- the English figure still contains Chinese text
+- the English figure is not Times New Roman
+- the Chinese figure is not rendered with a Chinese-capable academic font
+- axis labels overlap
 - the legend overlaps
-- the labels do not match the display-name map
-- the curve or points cannot be traced back to a confirmed result source
+- labels do not match the display-name map
+- the curve, points, or confidence intervals cannot be traced back to a confirmed result source
+- bilingual variants are generated from different data or different model logic without a recorded exception
+- an English final figure is created by standardizing, cropping, or copying a Chinese figure
+- final figure names are ambiguous enough that Word insertion could pick the wrong language variant
